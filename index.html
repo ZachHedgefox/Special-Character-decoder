@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cipher Translator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; background-color: #f0f2f5; color: #333; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 120px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; resize: vertical; }
+        textarea:focus { border-color: #007bff; outline: none; }
+        .output-label { margin-top: 20px; font-weight: bold; color: #555; display: block; }
+        .output { background: #e9ecef; padding: 15px; border-radius: 8px; min-height: 60px; margin-top: 10px; white-space: pre-wrap; word-break: break-all; border: 1px solid #ced4da; font-size: 18px; }
+        h2 { text-align: center; color: #007bff; margin-top: 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Cipher Translator</h2>
+    
+    <label for="inputArea">Type your message or code below:</label>
+    <textarea id="inputArea" placeholder="Type here... (e.g., 'hello' or '$3@@9')"></textarea>
+
+    <span class="output-label">Result:</span>
+    <div id="outputArea" class="output"></div>
+</div>
+
+<script>
+    // Your original mapping (Symbol -> Letter)
+    const decodeMap = {
+        '1': 'q', '2': 'w', '3': 'e', '4': 'r', '5': 't', 
+        '6': 'y', '7': 'u', '8': 'i', '9': 'o', '0': 'p',
+        '-': 'a', '/': 's', ':': 'd', ';': 'f', '(': 'g', 
+        ')': 'h', '$': 'j', '&': 'k', '@': 'l', '“': 'z',
+        '.': 'x', ',': 'c', '?': 'v', '!': 'b', '‘': 'n', '[': 'm'
+    };
+
+    // Create a reverse map automatically (Letter -> Symbol)
+    const encodeMap = {};
+    for (let key in decodeMap) {
+        encodeMap[decodeMap[key]] = key;
+    }
+
+    const input = document.getElementById('inputArea');
+    const output = document.getElementById('outputArea');
+
+    input.addEventListener('input', () => {
+        const text = input.value.toLowerCase(); // Convert to lower case to match your map
+        let result = "";
+
+        for (let char of text) {
+            if (decodeMap[char]) {
+                // If it's a code symbol, turn it into a letter
+                result += decodeMap[char];
+            } else if (encodeMap[char]) {
+                // If it's a letter, turn it into a code symbol
+                result += encodeMap[char];
+            } else {
+                // Keep spaces, punctuation, or line breaks as they are
+                result += char;
+            }
+        }
+
+        output.textContent = result;
+    });
+</script>
+
+</body>
+</html>
