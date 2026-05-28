@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cipher Translator</title>
+    <title>Cipher Translator with Copy</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; background-color: #f0f2f5; color: #333; }
         .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -10,6 +10,9 @@
         textarea:focus { border-color: #007bff; outline: none; }
         .output-label { margin-top: 20px; font-weight: bold; color: #555; display: block; }
         .output { background: #e9ecef; padding: 15px; border-radius: 8px; min-height: 60px; margin-top: 10px; white-space: pre-wrap; word-break: break-all; border: 1px solid #ced4da; font-size: 18px; }
+        .copy-btn { margin-top: 12px; padding: 10px 20px; font-size: 15px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; width: 100%; }
+        .copy-btn:hover { background-color: #0056b3; }
+        .copy-btn:active { background-color: #004085; }
         h2 { text-align: center; color: #007bff; margin-top: 0; }
     </style>
 </head>
@@ -23,6 +26,8 @@
 
     <span class="output-label">Result:</span>
     <div id="outputArea" class="output"></div>
+    
+    <button id="copyBtn" class="copy-btn">Copy Result</button>
 </div>
 
 <script>
@@ -43,25 +48,45 @@
 
     const input = document.getElementById('inputArea');
     const output = document.getElementById('outputArea');
+    const copyBtn = document.getElementById('copyBtn');
 
+    // Translation Logic
     input.addEventListener('input', () => {
-        const text = input.value.toLowerCase(); // Convert to lower case to match your map
+        const text = input.value.toLowerCase(); 
         let result = "";
 
         for (let char of text) {
             if (decodeMap[char]) {
-                // If it's a code symbol, turn it into a letter
                 result += decodeMap[char];
             } else if (encodeMap[char]) {
-                // If it's a letter, turn it into a code symbol
                 result += encodeMap[char];
             } else {
-                // Keep spaces, punctuation, or line breaks as they are
                 result += char;
             }
         }
 
         output.textContent = result;
+    });
+
+    // Copy to Clipboard Logic
+    copyBtn.addEventListener('click', () => {
+        const textToCopy = output.textContent;
+        
+        if (!textToCopy) return; // Do nothing if the output box is empty
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            // Visual feedback that it worked
+            copyBtn.textContent = "Copied!";
+            copyBtn.style.backgroundColor = "#28a745"; // Change button to green
+            
+            // Reset button back to normal after 1.5 seconds
+            setTimeout(() => {
+                copyBtn.textContent = "Copy Result";
+                copyBtn.style.backgroundColor = "#007bff";
+            }, 1500);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
     });
 </script>
 
